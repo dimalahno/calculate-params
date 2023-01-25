@@ -1,8 +1,8 @@
 package uz.paynet.constants;
 
-public class ServiceSettingsConstants {
+public interface ServiceSettingsConstants {
 
-    public static final String SERVICE_SETTINGS_URL = "/service_settings";
-    public static final String AGENT_ID_PARAM = "/{agentId}";
-    public static final String SERVICE_ID_PARAM = "/{serviceId}";
+    String SERVICE_SETTINGS_URL = "/service_settings";
+    String AGENT_ID_PARAM = "/{agentId}";
+    String SERVICE_ID_PARAM = "/{serviceId}";
 }
