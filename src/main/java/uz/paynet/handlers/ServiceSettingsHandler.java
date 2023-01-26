@@ -59,7 +59,7 @@ public class ServiceSettingsHandler {
         var serviceId = Integer.valueOf(request.pathVariable(SERVICE_ID));
         return ServerResponse.ok()
                 .contentType(APPLICATION_JSON)
-                .body(repository.findByAgentIdAndServiceId(agentId, serviceId), ServiceSettings.class);
+                .body(repository.findByAgentIdAndServiceIdAndStatus(agentId, serviceId, 1), ServiceSettings.class);
     }
 
     public Mono<ServerResponse> getServiceSettingsByAgentIdAndServiceIdAndStatus(ServerRequest request) {
