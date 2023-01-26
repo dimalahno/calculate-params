@@ -23,7 +23,9 @@ public class ServiceSettingsRouter {
                 .andRoute(GET(SERVICE_SETTINGS_URL.concat(SERVICE_ID_PARAM)).and(accept(MediaType.APPLICATION_JSON)),
                         handler::getServiceSettingsByServiceId)
                 .andRoute(GET(SERVICE_SETTINGS_URL.concat(AGENT_ID_PARAM).concat(SERVICE_ID_PARAM)).and(accept(MediaType.APPLICATION_JSON)),
-                        handler::getServiceSettingsByAgentIdAnServiceId)
+                        handler::getServiceSettingsByAgentIdAndServiceId)
+                .andRoute(GET(SERVICE_SETTINGS_URL.concat(AGENT_ID_PARAM).concat(SERVICE_ID_PARAM).concat(STATUS)).and(accept(MediaType.APPLICATION_JSON)),
+                        handler::getServiceSettingsByAgentIdAndServiceIdAndStatus)
                 .andRoute(POST(SERVICE_SETTINGS_URL).and(accept(MediaType.APPLICATION_JSON)),
                         handler::createServiceSettings);
     }

@@ -19,6 +19,7 @@ public class ServiceSettingsHandler {
 
     private final static String AGENT_ID = "agentId";
     private final static String SERVICE_ID = "serviceId";
+    private final static String STATUS = "status";
     private final static Mono<ServerResponse> NOT_FOUND = ServerResponse.notFound().build();
 
     final ServiceSettingsRepository repository;
@@ -53,11 +54,20 @@ public class ServiceSettingsHandler {
                 .switchIfEmpty(NOT_FOUND);
     }
 
-    public Mono<ServerResponse> getServiceSettingsByAgentIdAnServiceId(ServerRequest request) {
+    public Mono<ServerResponse> getServiceSettingsByAgentIdAndServiceId(ServerRequest request) {
         var agentId = Integer.valueOf(request.pathVariable(AGENT_ID));
         var serviceId = Integer.valueOf(request.pathVariable(SERVICE_ID));
         return ServerResponse.ok()
                 .contentType(APPLICATION_JSON)
                 .body(repository.findByAgentIdAndServiceId(agentId, serviceId), ServiceSettings.class);
+    }
+
+    public Mono<ServerResponse> getServiceSettingsByAgentIdAndServiceIdAndStatus(ServerRequest request) {
+        var agentId = Integer.valueOf(request.pathVariable(AGENT_ID));
+        var serviceId = Integer.valueOf(request.pathVariable(SERVICE_ID));
+        var status = Integer.valueOf(request.pathVariable(STATUS));
+        return ServerResponse.ok()
+                .contentType(APPLICATION_JSON)
+                .body(repository.findByAgentIdAndServiceIdAndStatus(agentId, serviceId, status), ServiceSettings.class);
     }
 }
