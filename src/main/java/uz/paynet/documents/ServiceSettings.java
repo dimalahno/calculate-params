@@ -22,7 +22,6 @@ public class ServiceSettings {
     @NonNull
     private Integer serviceId;
     private Double paynetFee;
-    private Integer paynetFeeFix;
     private Double agentFee;
     private Integer agentFeeFix;
     private Double upCommissionFromClient;

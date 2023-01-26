@@ -81,7 +81,6 @@ public class ServiceSettingsHandler {
                             currentItem.setAgentId(item.getAgentId());
                             currentItem.setServiceId(item.getServiceId());
                             currentItem.setPaynetFee(item.getPaynetFee());
-                            currentItem.setPaynetFeeFix(item.getPaynetFeeFix());
                             currentItem.setAgentFee(item.getAgentFee());
                             currentItem.setAgentFeeFix(item.getAgentFeeFix());
                             currentItem.setUpCommissionFromClient(item.getUpCommissionFromClient());
