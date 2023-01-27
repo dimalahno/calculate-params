@@ -3,12 +3,16 @@ package uz.paynet.handlers;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+import uz.paynet.documents.ServiceSettings;
 import uz.paynet.dto.IncomingParameters;
 import uz.paynet.dto.OutResults;
 import uz.paynet.repository.ServiceSettingsRepository;
+
+import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 
@@ -16,22 +20,48 @@ import static java.util.Objects.nonNull;
 @AllArgsConstructor
 public class CalculationHandler {
 
+    private final static Mono<ServerResponse> NOT_FOUND = ServerResponse.notFound().build();
+
     final ServiceSettingsRepository repository;
 
     public Mono<ServerResponse> getCalculation (ServerRequest request) {
-        Mono<OutResults> results = Mono.just(calculate(request));
+
+        // OutResults results;
+
+        OutResults results = OutResults.builder().build();
+
+        // 1. Getting incoming parameters
+        var in = request.bodyToMono(IncomingParameters.class).block();
+        if (nonNull(in)) {
+
+            // 2. Getting setting parameters
+            var settingsList = repository.findByAgentIdAndServiceIdAndStatus(in.getAgentId(), in.getServiceId(), 1)
+                    .collectList().block();
+
+            Optional<ServiceSettings> settings;
+            if (!CollectionUtils.isEmpty(settingsList)) {
+
+                // Check has card type
+                if (nonNull(in.getCardType())) {
+                    settings = settingsList.stream()
+                            .filter(s -> s.getCardType().equals(in.getCardType()))
+                            .findFirst();
+                } else {
+                    settings = settingsList.stream().findFirst();
+                }
+
+                if (settings.isPresent()) {
+                    results = calculate(in, settings.get());
+                }
+            }
+        }
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(results, OutResults.class);
+                .body(Mono.just(results), OutResults.class)
+                .switchIfEmpty(NOT_FOUND);
     }
 
-    private OutResults calculate(ServerRequest request) {
-        // 1. getting incoming parameters
-        var in = request.bodyToMono(IncomingParameters.class).block();
-        // 2. getting service settings
-        var settings = repository.findByAgentIdAndServiceIdAndStatus(in.getAgentId(), in.getServiceId(), 1).block();
-        // 3. calculate results
-
+    private OutResults calculate(IncomingParameters in, ServiceSettings settings) {
         long amount = in.getAmount();
         long purchasedAmount = in.getPurchasedAmount();
 
