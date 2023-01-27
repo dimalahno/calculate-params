@@ -12,6 +12,7 @@ import java.net.URI;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
+import static uz.paynet.constants.ServiceSettingsConstants.NOT_FOUND;
 import static uz.paynet.constants.ServiceSettingsConstants.SERVICE_SETTINGS_URL;
 
 @Component
@@ -22,7 +23,6 @@ public class ServiceSettingsHandler {
     private final static String AGENT_ID = "agentId";
     private final static String SERVICE_ID = "serviceId";
     private final static String STATUS = "status";
-    private final static Mono<ServerResponse> NOT_FOUND = ServerResponse.notFound().build();
 
     final ServiceSettingsRepository repository;
 
@@ -54,7 +54,7 @@ public class ServiceSettingsHandler {
         var serviceId = Integer.valueOf(request.pathVariable(SERVICE_ID));
         return ServerResponse.ok()
                 .contentType(APPLICATION_JSON)
-                .body(repository.findByAgentIdAndServiceIdAndStatus(agentId, serviceId, 1), ServiceSettings.class);
+                .body(repository.findByAgentIdAndServiceId(agentId, serviceId), ServiceSettings.class);
     }
 
     public Mono<ServerResponse> getServiceSettingsByAgentIdAndServiceIdAndStatus(ServerRequest request) {
