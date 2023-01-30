@@ -1,10 +1,12 @@
 package uz.paynet.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import uz.paynet.documents.CardType;
 
 @Data
+@Builder
 public class IncomingParameters {
 
     @NonNull
